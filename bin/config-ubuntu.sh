@@ -7,8 +7,8 @@ OPENJDK_JRE_VERSION=17
 
 apt update && apt upgrade
 
-# Install a great grep
-apt install silversearcher-ag
+# Install essentials
+apt install silversearcher-ag vim
 
 # Install nvidia headless drivers
 # TODO: Check for server vs. desktop install
@@ -16,11 +16,11 @@ apt install nvidia-headless-"${NVIDIA_VERSION}${NVIDIA_VARIANT}"
 
 # TODO: Grab AMD driver and install
 
-# Enable AMD overclocking
-# First check for enable in grub defaults
+# Ensure AMD overclocking is enabled
 AMD_OC_ENABLED=$(grep 'amdgpu.ppfeaturemask' /etc/default/grub)
 [ -z "${AMD_OC_ENABLED}" ] \
-	&& echo 'GRUB_CMDLINE_LINUX_DEFAULT="${GRUB_CMDLINE_LINUX_DEFAULT} amdgpu.ppfeaturemask=-0xffffffff"' >> /etc/default/grub \
+	&& echo 'GRUB_CMDLINE_LINUX_DEFAULT="${GRUB_CMDLINE_LINUX_DEFAULT} amdgpu.ppfeaturemask=0xffffffff"' >> /etc/default/grub \
+	&& sudo update-grub && sudo update-grub2 && sudo update-initramfs -u -k all \
 	|| echo "AMD overclock mask already set: ${AMD_OC_ENABLED}"
 
 # Install java for minecraft server...
